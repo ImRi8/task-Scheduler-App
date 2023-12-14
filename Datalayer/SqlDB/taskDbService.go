@@ -10,8 +10,8 @@ type TaskDbService struct {
 }
 
 const (
-	readTaskById   = "SELECT id,is_shadowed,created_at,updated_at,title,description,priority,due_date FROM task WHERE id = ? and is_shadowed = false;"
-	updateTaskById = "UPDATE task SET is_shadowed = ?, title= ?,description =?,priority=?,due_date=? WHERE id = ?;"
+	readTaskById   = "SELECT id,is_shadowed,created_at,updated_at,title,description,priority,due_date FROM task WHERE id = ? and is_shadowed = ?;"
+	updateTaskById = "UPDATE task SET title= ?,description =?,priority=?,due_date=? WHERE id = ?;"
 	shadowTaskById = "UPDATE task SET is_shadowed = ? WHERE id = ?;"
 	createTaskById = "INSERT INTO task (is_shadowed, title, description, priority, due_date) VALUES (?, ?, ?, ?, ?);"
 )
@@ -20,7 +20,7 @@ func (taskDbService *TaskDbService) ShadowRowInEntity(Id int64, ctx *gofr.Contex
 	res, err := ctx.DB().ExecContext(ctx, shadowTaskById, true, Id)
 
 	if err != nil {
-		ctx.Logger.Error("Error while Updating the Data", err)
+		ctx.Logger.Error("Error while Updating the Data", err.Error())
 		return err
 	}
 
@@ -61,7 +61,7 @@ func (taskDbService *TaskDbService) UnShadowRowInEntity(Id int64, ctx *gofr.Cont
 }
 
 func (taskDbService *TaskDbService) CreateRowInEntity(ctx *gofr.Context, obj interface{}) (interface{}, error) {
-	task := obj.(Entity.Task)
+	task := obj.(*Entity.Task)
 
 	res, err := ctx.DB().ExecContext(ctx, createTaskById, task.IsShadowed, task.Title, task.Description, task.Priority, task.DueDate)
 
@@ -71,6 +71,9 @@ func (taskDbService *TaskDbService) CreateRowInEntity(ctx *gofr.Context, obj int
 	}
 
 	rowsAffected, rowsAffErr := res.RowsAffected()
+
+	resId, _ := res.LastInsertId()
+	task.ID = resId
 
 	if rowsAffErr != nil {
 		ctx.Logger.Error("Error while creating a row", err)
@@ -84,9 +87,10 @@ func (taskDbService *TaskDbService) CreateRowInEntity(ctx *gofr.Context, obj int
 	return task, nil
 }
 
-func (taskDbService *TaskDbService) UpdateRowInEntity(ctx *gofr.Context, obj interface{}) (interface{}, error) {
-	task := obj.(Entity.Task)
-	res, err := ctx.DB().ExecContext(ctx, updateTaskById, task.IsShadowed, task.Title, task.Description, task.Priority, task.DueDate, task.ID)
+func (taskDbService *TaskDbService) UpdateRowInEntity(ctx *gofr.Context, obj interface{}, id int64) (interface{}, error) {
+	task := obj.(*Entity.Task)
+
+	res, err := ctx.DB().ExecContext(ctx, updateTaskById, task.Title, task.Description, task.Priority, task.DueDate, id)
 
 	if err != nil {
 		ctx.Logger.Error("Error while Updating the Data", err)
@@ -108,7 +112,7 @@ func (taskDbService *TaskDbService) UpdateRowInEntity(ctx *gofr.Context, obj int
 
 func (taskDbService *TaskDbService) GetEntityById(Id int64, ctx *gofr.Context) (interface{}, error) {
 	var task Entity.Task
-	rows, err := ctx.DB().QueryContext(ctx, readTaskById, Id)
+	rows, err := ctx.DB().QueryContext(ctx, readTaskById, Id, false)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -117,9 +121,6 @@ func (taskDbService *TaskDbService) GetEntityById(Id int64, ctx *gofr.Context) (
 		}
 		ctx.Logger.Error("Error while reading from db", err)
 		return nil, err
-	}
-	if rows == nil {
-		ctx.Logger.Debug("NO row found for this id", Id)
 	}
 
 	for rows.Next() {
@@ -135,9 +136,11 @@ func (taskDbService *TaskDbService) GetEntityById(Id int64, ctx *gofr.Context) (
 			ctx.Logger.Error("Error while scanning the rows", scnErr.Error())
 			return nil, scnErr
 		}
+	}
 
+	if task.ID == 0 {
+		return nil, nil
 	}
 
 	return task, nil
-
 }

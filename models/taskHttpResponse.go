@@ -6,17 +6,17 @@ import (
 )
 
 type Response struct {
-	Status      string    `json:"status,omitempty"`
-	Message     string    `json:"message,omitempty"`
-	HttpStatus  int       `json:"httpStatus,omitempty"`
-	ID          int64     `json:"id"`
-	IsShadowed  bool      `json:"isShadowed"`
-	CreatedAt   time.Time `json:"createdAt"`
-	UpdatedAt   time.Time `json:"updatedAt"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Priority    int64     `json:"priority"`
-	DueDate     time.Time `json:"dueDate"`
+	Status     string `json:"status,omitempty"`
+	Message    string `json:"message,omitempty"`
+	HttpStatus int    `json:"httpStatus,omitempty"`
+	ID         int64  `json:"id,omitempty"`
+	IsShadowed bool   `json:"isShadowed,omitempty"`
+	//CreatedAt   time.Time `json:"createdAt,omitempty"`
+	//UpdatedAt   time.Time `json:"updatedAt,omitempty"`
+	Title       string    `json:"title,omitempty"`
+	Description string    `json:"description,omitempty"`
+	Priority    int64     `json:"priority,omitempty"`
+	DueDate     time.Time `json:"dueDate,omitempty"`
 }
 
 func ResponseMsg(status string, message string, httpStatus int) Response {
@@ -35,10 +35,8 @@ func TaskResponseMsg(status string, message string, httpStatus int, task Entity.
 		HttpStatus:  httpStatus,
 		ID:          task.ID,
 		IsShadowed:  task.IsShadowed,
-		CreatedAt:   task.CreatedAt,
-		UpdatedAt:   task.UpdatedAt,
 		Title:       task.Title,
-		Description: task.Title,
+		Description: task.Description,
 		Priority:    task.Priority,
 		DueDate:     task.DueDate,
 	}

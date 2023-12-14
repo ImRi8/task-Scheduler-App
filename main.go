@@ -22,6 +22,12 @@ func main() {
 
 	app.GET(TASK_BACKEND+"/getTaskById", Handlers.GetTaskByIdHandler)
 
+	app.POST(TASK_BACKEND+"/deleteTaskById", Handlers.DeleteTaskByIdHandler)
+
+	app.POST(TASK_BACKEND+"/createTask", Handlers.CreateTaskHandler)
+
+	app.POST(TASK_BACKEND+"/updateTask", Handlers.UpdateTaskHandler)
+
 	//app.GET("/")
 	// Starts the server, it will listen on the default port 8000.
 	// it can be over-ridden through configs

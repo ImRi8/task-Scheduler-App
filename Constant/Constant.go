@@ -1,6 +1,7 @@
 package Constant
 
 const (
-	FAILURE = "FAILURE"
-	SUCCESS = "SUCCESS"
+	FAILURE       = "FAILURE"
+	SUCCESS       = "SUCCESS"
+	IndiaTimeZone = "Asia/Kolkata"
 )

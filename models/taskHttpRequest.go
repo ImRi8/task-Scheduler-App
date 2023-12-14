@@ -10,5 +10,5 @@ type Request struct {
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Priority    int64     `json:"priority"`
-	DueDate     time.Time `json:"dueDate"`
+	DueDate     string    `json:"dueDate"`
 }
