@@ -42,7 +42,6 @@ func DateTimeToTime(dateTime string) *time.Time {
 func ParseStringToTime(dateTime string) (*time.Time, error) {
 	parsedDate, err := time.Parse(time.RFC3339, dateTime)
 	if err != nil {
-		fmt.Errorf("error while conversion", err.Error())
 		return nil, err
 	}
 	return &parsedDate, nil
