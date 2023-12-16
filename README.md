@@ -123,3 +123,8 @@ Ensure you have the following prerequisites before setting up the project:
 - `description` (string): Task description.
 - `priority` (bigint): Task priority (1 to 5).
 - `due_date` (time): Task due date (cannot be before the current timestamp).
+
+
+## Contact
+
+Rishabh Kumar Singh - singh.rishabh701@gmail.com
