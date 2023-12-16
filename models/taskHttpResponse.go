@@ -13,10 +13,10 @@ type Response struct {
 	IsShadowed bool   `json:"isShadowed,omitempty"`
 	//CreatedAt   time.Time `json:"createdAt,omitempty"`
 	//UpdatedAt   time.Time `json:"updatedAt,omitempty"`
-	Title       string    `json:"title,omitempty"`
-	Description string    `json:"description,omitempty"`
-	Priority    int64     `json:"priority,omitempty"`
-	DueDate     time.Time `json:"dueDate,omitempty"`
+	Title       string     `json:"title,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Priority    int64      `json:"priority,omitempty"`
+	DueDate     *time.Time `json:"dueDate,omitempty"`
 }
 
 func ResponseMsg(status string, message string, httpStatus int) Response {
@@ -38,7 +38,7 @@ func TaskResponseMsg(status string, message string, httpStatus int, task Entity.
 		Title:       task.Title,
 		Description: task.Description,
 		Priority:    task.Priority,
-		DueDate:     task.DueDate,
+		DueDate:     &task.DueDate,
 	}
 
 	return resp

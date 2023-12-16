@@ -5,7 +5,6 @@ import (
 	"Task-scheduler-App/Datalayer/Entity"
 	"Task-scheduler-App/Datalayer/SqlDB"
 	"Task-scheduler-App/models"
-	"fmt"
 	"gofr.dev/pkg/gofr"
 	"net/http"
 	"strconv"
@@ -29,17 +28,7 @@ func isNumeric(str string) bool {
 	return err == nil
 }
 
-func DateTimeToTime(dateTime string) *time.Time {
-	parsedDate, err := time.ParseInLocation(dateTimeFormat, dateTime, time.UTC)
-	if err != nil {
-		fmt.Println("error while parsing datetime", err.Error())
-		return nil
-	}
-
-	return &parsedDate
-}
-
-func ParseStringToTime(dateTime string) (*time.Time, error) {
+func parseStringToTime(dateTime string) (*time.Time, error) {
 	parsedDate, err := time.Parse(time.RFC3339, dateTime)
 	if err != nil {
 		return nil, err
@@ -147,7 +136,7 @@ func (taskService *TaskService) CreateTaskById(taskRequest models.Request, ctx *
 }
 
 func (taskService *TaskService) convertRequestToTaskEntity(taskRequest models.Request) Entity.Task {
-	dateTime, _ := ParseStringToTime(taskRequest.DueDate)
+	dateTime, _ := parseStringToTime(taskRequest.DueDate)
 	task := Entity.Task{
 		Title:       taskRequest.Title,
 		Description: taskRequest.Description,
@@ -168,7 +157,7 @@ func (taskService *TaskService) validateCreateTaskById(taskRequest models.Reques
 		return models.ResponseMsg(Constant.FAILURE, "Invalid Priority Set", http.StatusOK)
 	}
 
-	dateTime, _ := ParseStringToTime(taskRequest.DueDate)
+	dateTime, _ := parseStringToTime(taskRequest.DueDate)
 
 	if dateTime == nil || currentTime.After(*dateTime) {
 		return models.ResponseMsg(Constant.FAILURE, "Invalid Due-Date", http.StatusOK)
@@ -222,7 +211,7 @@ func (taskService *TaskService) createUpdateTaskEntity(taskRequest models.Reques
 	}
 
 	if taskRequest.DueDate != "" {
-		dueTime, _ := ParseStringToTime(taskRequest.DueDate)
+		dueTime, _ := parseStringToTime(taskRequest.DueDate)
 		if dueTime != nil {
 			task.DueDate = *dueTime
 		}
@@ -250,7 +239,7 @@ func (taskService *TaskService) validateUpdateTaskById(taskRequest models.Reques
 	}
 	if taskRequest.DueDate != "" {
 		currentTime := time.Now()
-		dateTime, _ := ParseStringToTime(taskRequest.DueDate)
+		dateTime, _ := parseStringToTime(taskRequest.DueDate)
 		if dateTime == nil || currentTime.After(*dateTime) {
 			return models.ResponseMsg(Constant.FAILURE, "Invalid Due-Date", http.StatusOK)
 		}

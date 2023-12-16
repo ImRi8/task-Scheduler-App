@@ -20,8 +20,8 @@ func TestIntegration(t *testing.T) {
 		body       []byte
 	}{
 		{"get Health", http.MethodGet, "task/health", http.StatusOK, nil},
-		{"get TaskById", http.MethodGet, "task/getTaskById?id=3", http.StatusOK, nil},
-		{"post DeleteById", http.MethodPost, "task/deleteTaskById?id=2", http.StatusCreated, nil},
+		{"get TaskById", http.MethodGet, "task/getTaskById?id=1", http.StatusOK, nil},
+		{"post DeleteById", http.MethodPost, "task/deleteTaskById?id=9", http.StatusCreated, nil},
 		{"post CreateTask", http.MethodPost, "task/createTask", http.StatusCreated, []byte(`{
 		
 			"title": "newtask1",
@@ -33,7 +33,7 @@ func TestIntegration(t *testing.T) {
 		{"post Updatetask", http.MethodPost, "task/updateTask", http.StatusCreated, []byte(`{
 		
 			"id" : 1,
-			"description" : "newupdate"
+			"description" : "new-update"
 		
 		}`),
 		}}
