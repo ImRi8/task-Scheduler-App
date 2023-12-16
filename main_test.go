@@ -21,7 +21,7 @@ func TestIntegration(t *testing.T) {
 	}{
 		{"get Health", http.MethodGet, "task/health", http.StatusOK, nil},
 		{"get TaskById", http.MethodGet, "task/getTaskById?id=1", http.StatusOK, nil},
-		{"post DeleteById", http.MethodPost, "task/deleteTaskById?id=9", http.StatusCreated, nil},
+		{"post DeleteById", http.MethodPost, "task/deleteTaskById?id=15", http.StatusCreated, nil},
 		{"post CreateTask", http.MethodPost, "task/createTask", http.StatusCreated, []byte(`{
 		
 			"title": "newtask1",

@@ -15,18 +15,40 @@ func intializeCtx(t *testing.T) *gofr.Context {
 	return ctx
 }
 
+func ParseStringToTime(dateTime string) *time.Time {
+	parsedDate, err := time.Parse(time.RFC3339, dateTime)
+	if err != nil {
+		return nil
+	}
+	utc := parsedDate.UTC()
+	return &utc
+}
+
 func TestTaskDbService_GetEntityById(t *testing.T) {
 	ctx := intializeCtx(t)
+
+	id4Date := ParseStringToTime("2023-12-17T23:38:01+05:30")
+	id5Date := ParseStringToTime("2023-12-19T20:34:08+05:30")
 	taskDbService := TaskDbService{}
 	test := []struct {
 		id       int64
 		response interface{}
 	}{
-		{30, nil},
-		{31, nil},
-		{33, Entity.Task{
-			ID: 33,
-		}}}
+		{4, Entity.Task{
+			ID:          4,
+			Description: "Description of the new task2",
+			Priority:    3,
+			DueDate:     *id4Date,
+		}},
+		{5, Entity.Task{
+			ID:          5,
+			Title:       "newtask5",
+			Description: "newupdate",
+			Priority:    2,
+			DueDate:     *id5Date,
+		}},
+		{1000, nil},
+		{0, nil}}
 
 	for _, tc := range test {
 		resp, err := taskDbService.GetEntityById(tc.id, ctx)
@@ -48,9 +70,10 @@ func TestTaskDbService_ShadowRowInEntity(t *testing.T) {
 		expErr            error
 		expectedRowsCount int64
 	}{
-		{1, nil, 0},
+		{1000, nil, 0},
 		{2, nil, 0},
-		{3, nil, 0},
+		{2, nil, 0},
+		{0, nil, 0},
 	}
 	for _, tc := range test {
 		err := taskDbService.ShadowRowInEntity(tc.id, ctx)
@@ -81,9 +104,10 @@ func TestTaskDbService_UnShadowRowInEntity(t *testing.T) {
 		expectedError     error
 		expectedRowsCount int64
 	}{
+		{0, nil, 0},
 		{1, nil, 0},
-		{2, nil, 0},
-		{3, nil, 0},
+		{1, nil, 0},
+		{1000, nil, 0},
 	}
 
 	for _, tc := range tests {
@@ -131,16 +155,26 @@ func TestTaskDbService_CreateRowInEntity(t *testing.T) {
 		}, {
 			&Entity.Task{
 				IsShadowed:  false,
-				Title:       "New Task1",
-				Description: "Description of the new task1",
-				Priority:    2,
+				Title:       "New Task2",
+				Description: "Description of the new task2",
+				Priority:    8,
+				DueDate:     time.Now().Add(24 * time.Hour),
+			},
+			nil,
+		},
+		{
+			&Entity.Task{
+				IsShadowed:  false,
+				Title:       "New Task2",
+				Description: "Description of the new task2",
+				Priority:    0,
 				DueDate:     time.Now().Add(24 * time.Hour),
 			},
 			nil,
 		}, {
 			&Entity.Task{
 				IsShadowed:  false,
-				Title:       "New Task2",
+				Title:       "",
 				Description: "Description of the new task2",
 				Priority:    3,
 				DueDate:     time.Now().Add(24 * time.Hour),
@@ -201,10 +235,38 @@ func TestTaskDbService_UpdateRowInEntity(t *testing.T) {
 				DueDate:     time.Now().Add(24 * time.Hour),
 			},
 			nil,
-		}, {3,
+		}, {10000,
 			&Entity.Task{
 				Title:       "New Update1",
 				Description: "Description of the new update1",
+				DueDate:     time.Now().Add(24 * time.Hour),
+			},
+			nil,
+		}, {
+			1, &Entity.Task{
+				IsShadowed:  false,
+				Title:       "New Task",
+				Description: "Description of the new task",
+				Priority:    0,
+				DueDate:     time.Now().Add(24 * time.Hour),
+			},
+			nil,
+		}, {
+			2, &Entity.Task{
+				IsShadowed:  false,
+				Title:       "New Task2",
+				Description: "Description of the new task2",
+				Priority:    8,
+				DueDate:     time.Now().Add(24 * time.Hour),
+			},
+			nil,
+		},
+		{
+			4, &Entity.Task{
+				IsShadowed:  false,
+				Title:       "",
+				Description: "Description of the new task2",
+				Priority:    3,
 				DueDate:     time.Now().Add(24 * time.Hour),
 			},
 			nil,

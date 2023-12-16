@@ -106,6 +106,7 @@ func (taskDbService *TaskDbService) UpdateRowInEntity(ctx *gofr.Context, obj int
 
 	if rowsAffected == 0 {
 		ctx.Logger.Error("Unable to update the row")
+		return nil, nil
 	}
 	return task, nil
 }
