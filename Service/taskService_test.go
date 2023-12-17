@@ -113,10 +113,10 @@ func TestTaskService_DeleteTaskById(t *testing.T) {
 			},
 		}, {
 			desc: "testing for empty value",
-			id:   "",
+			id:   "0",
 			expected: models.Response{
 				Status:     "FAILURE",
-				Message:    "Valid id not found",
+				Message:    "Id does not exist or already deleted",
 				HttpStatus: 200,
 			},
 		}, {
@@ -167,7 +167,7 @@ func TestTaskService_CreateTaskById(t *testing.T) {
 				Status:      "SUCCESS",
 				Message:     "Task Creation OK!!",
 				HttpStatus:  200,
-				ID:          107,
+				ID:          4,
 				Title:       "New title",
 				Description: "Descp of new title",
 				Priority:    2,
@@ -188,7 +188,7 @@ func TestTaskService_CreateTaskById(t *testing.T) {
 				HttpStatus: 200,
 			},
 		}, {
-			desc: "create task for empty title",
+			desc: "create task with invalid priority",
 			input: models.Request{
 				Title:       "test 123",
 				Description: "Descp of new title",
@@ -202,11 +202,11 @@ func TestTaskService_CreateTaskById(t *testing.T) {
 			},
 		},
 		{
-			desc: "create task for empty title",
+			desc: "create task for empty duedate",
 			input: models.Request{
 				Title:       "test 123",
 				Description: "Descp of new title",
-				Priority:    8,
+				Priority:    4,
 				DueDate:     "",
 			},
 			expected: models.Response{
@@ -215,7 +215,7 @@ func TestTaskService_CreateTaskById(t *testing.T) {
 				HttpStatus: 200,
 			},
 		}, {
-			desc: "create task for empty title",
+			desc: "create task for invalid priority title",
 			input: models.Request{
 				Title:       "test 123",
 				Description: "Descp of new title",
@@ -228,7 +228,7 @@ func TestTaskService_CreateTaskById(t *testing.T) {
 				HttpStatus: 200,
 			},
 		}, {
-			desc: "create task with valid input",
+			desc: "create task with invalid input",
 			input: models.Request{
 				Title:       "New title",
 				Description: "Descp of new title",
@@ -268,7 +268,7 @@ func TestTaskService_UpdateTaskById(t *testing.T) {
 			desc: "update task with valid input",
 			id:   "1",
 			input: models.Request{
-				ID:          18,
+				ID:          4,
 				Title:       "New update title",
 				Description: "Descp of new title",
 			},
@@ -276,14 +276,14 @@ func TestTaskService_UpdateTaskById(t *testing.T) {
 				Status:      "SUCCESS",
 				Message:     "Task Updation OK!!",
 				HttpStatus:  200,
-				ID:          18,
+				ID:          4,
 				Title:       "New update title",
 				Description: "Descp of new title",
 				Priority:    2,
 				DueDate:     parseStringToTimeLocal("2023-12-19T20:34:08+05:30"),
 			},
 		}, {
-			desc: "create task with valid input",
+			desc: "update task with invalid input",
 			id:   "1",
 			input: models.Request{
 				ID:          1,
@@ -298,7 +298,7 @@ func TestTaskService_UpdateTaskById(t *testing.T) {
 				HttpStatus: 200,
 			},
 		}, {
-			desc: "create task for empty title",
+			desc: "create task for invalid priority",
 			input: models.Request{
 				ID:          1,
 				Title:       "test 123",
@@ -313,50 +313,38 @@ func TestTaskService_UpdateTaskById(t *testing.T) {
 			},
 		},
 		{
-			desc: "create task for empty title",
+			desc: "update task for empty title",
 			id:   "1",
 			input: models.Request{
 				ID:          1,
-				Title:       "test 123",
-				Description: "Descp of new title",
+				Title:       "",
+				Description: "Desc of new title",
 				Priority:    0,
-				DueDate:     "2023-12-19T15:04:08Z",
 			},
 			expected: models.Response{
-				Status:     Constant.FAILURE,
-				Message:    "Invalid Priority Set",
-				HttpStatus: 200,
+				Status:      "SUCCESS",
+				Message:     "Task Updation OK!!",
+				HttpStatus:  200,
+				ID:          1,
+				Title:       "test 123",
+				Description: "Desc of new title",
+				Priority:    2,
+				DueDate:     parseStringToTimeLocal("2023-12-19T20:34:08+05:30"),
 			},
 		},
 		{
 			desc: "create task for empty title",
 			id:   "",
 			input: models.Request{
-				ID:          1,
-				Title:       "test 123",
+				ID:          2,
+				Title:       "",
 				Description: "Descp of new title",
 				Priority:    0,
 				DueDate:     "2023-12-19T15:04:08Z",
 			},
 			expected: models.Response{
 				Status:     Constant.FAILURE,
-				Message:    "Invalid Priority Set",
-				HttpStatus: 200,
-			},
-		},
-		{
-			desc: "create task for empty title",
-			id:   "0",
-			input: models.Request{
-				ID:          0,
-				Title:       "test 123",
-				Description: "Descp of new title",
-				Priority:    0,
-				DueDate:     "2023-12-19T15:04:08Z",
-			},
-			expected: models.Response{
-				Status:     Constant.FAILURE,
-				Message:    "Invalid Priority Set",
+				Message:    "Entry for this id not found",
 				HttpStatus: 200,
 			},
 		},
