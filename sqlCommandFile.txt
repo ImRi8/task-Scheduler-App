@@ -1,0 +1,20 @@
+CREATE DATABASE taskDB;
+
+USE taskDB;
+
+CREATE TABLE task (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    is_shadowed BOOLEAN,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    title VARCHAR(255) NOT NULL CHECK(title!=' '),
+    description VARCHAR(255),
+    priority BIGINT NOT NULL CHECK (priority >= 1 AND priority <= 5),
+    due_date TIMESTAMP
+);
+
+select * from task;
+
+SHOW CREATE TABLE task;
+
+describe task;
