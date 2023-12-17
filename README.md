@@ -51,7 +51,7 @@ Ensure you have the following prerequisites before setting up the project:
    ```
    docker exec -it gofr-mysql mysql -uroot -proot taskDB -e "CREATE TABLE task (Id INT AUTO_INCREMENT PRIMARY KEY,is_shadowed BOOLEAN,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,title VARCHAR(255),description VARCHAR(255),priority BIGINT,due_date TIMESTAMP);"
    ```
-** If the above command does not run then, Create a DataBase named taskDB and create a table with below schema (Follow the sqlCommandFile.txt)**
+**If the above command does not work then, Create a DataBase named taskDB and create a table with below schema (Follow the sqlCommandFile.txt)**
 
 5. Enter your MySQL credentials in `config/.env`:
 
